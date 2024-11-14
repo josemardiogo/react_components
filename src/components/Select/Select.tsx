@@ -155,7 +155,7 @@ const Select = ({ options, selectedIds = [], setSelectedIds }: SelectProps) => {
 export default Select;
 
 
-// how look like in app component
+// how look like in app component // d
 /* 
 const options: IOption[] = [
     { id: 1, name: 'United States' },
