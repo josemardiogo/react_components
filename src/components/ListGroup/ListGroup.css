@@ -1,0 +1,3 @@
+.list-group-item.active {
+    background-color: var(--bs-list-group-active-bg) !important;
+}
