@@ -1,7 +1,14 @@
+// tsconfig.json
 {
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",          // Define a base como o root do projeto
+    "paths": {
+      "~/*": ["./*"]         // Mapeia `~` para o root do projeto
+    }
+  }
 }

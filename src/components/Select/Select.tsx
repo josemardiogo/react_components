@@ -1,25 +1,18 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { IOption } from "~/public/interfaces.ts";
 
-const Select = () => {
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+interface SelectProps {
+    options: IOption[]
+    selectedIds: number[]
+    setSelectedIds: React.Dispatch<React.SetStateAction<number[]>>
+}
+
+const Select = ({ options, selectedIds = [], setSelectedIds }: SelectProps) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const inputRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
-
-    const options = [
-        'United States',
-        'Canada',
-        'United Kingdom',
-        'France',
-        'Germany',
-        'Japan',
-        'Australia',
-        'Brazil',
-        'India',
-        'China',
-    ];
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -60,7 +53,7 @@ const Select = () => {
             setFocusedIndex(prev => prev > 0 ? prev - 1 : prev);
         } else if (e.key === 'Enter' && focusedIndex >= 0) {
             e.preventDefault();
-            handleSelection(filteredOptions[focusedIndex]);
+            handleSelection(filteredOptions[focusedIndex].id);
         } else if (e.key === 'Escape') {
             e.preventDefault();
             setIsOpen(false);
@@ -68,23 +61,23 @@ const Select = () => {
         }
     };
 
-    const handleSelection = (value: string) => {
-        if (value && !selectedItems.includes(value)) {
-            setSelectedItems([...selectedItems, value]);
+    const handleSelection = (id: number) => {
+        if (id && !selectedIds.includes(id)) {
+            setSelectedIds([...selectedIds, id]);
             setSearchQuery('');
             setIsOpen(false);
             setFocusedIndex(-1);
         }
     };
 
-    const handleRemove = (item: string) => {
-        setSelectedItems(selectedItems.filter((i) => i !== item));
+    const handleRemove = (id: number) => {
+        setSelectedIds(selectedIds.filter((i) => i !== id));
     };
 
     const filteredOptions = options
-        .filter(option => !selectedItems.includes(option))
+        .filter(option => !selectedIds.includes(option.id))
         .filter((option) =>
-            option.toLowerCase().includes(searchQuery.toLowerCase())
+            option.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
     return (
@@ -105,12 +98,12 @@ const Select = () => {
                         <div className="max-h-48 overflow-y-auto border-2 border-blue-500 rounded-md bg-white">
                             {filteredOptions.map((option, index) => (
                                 <div
-                                    key={option}
+                                    key={option.id}
                                     className={`px-4 py-2 cursor-pointer ${focusedIndex === index ? 'bg-blue-100' : 'hover:bg-blue-100'
                                         }`}
-                                    onClick={() => handleSelection(option)}
+                                    onClick={() => handleSelection(option.id)}
                                 >
-                                    {option}
+                                    {option.name}
                                 </div>
                             ))}
                         </div>
@@ -119,20 +112,24 @@ const Select = () => {
             </div>
 
             <div className="flex flex-wrap gap-3 mt-6">
-                {selectedItems.map((item) => (
-                    <div
-                        key={item}
-                        className="bg-gradient-to-br from-blue-200 to-blue-300 rounded-full px-4 py-2 flex items-center gap-2 shadow-sm animate-fadeIn"
-                    >
-                        {item}
-                        <button
-                            className="bg-none text-red-600 text-xl cursor-pointer hover:scale-110 transition-all"
-                            onClick={() => handleRemove(item)}
+                {selectedIds.map((id) => {
+                    const item = options.find(opt => opt.id === id);
+                    if (!item) return null;
+                    return (
+                        <div
+                            key={id}
+                            className="bg-gradient-to-br from-blue-200 to-blue-300 rounded-full px-4 py-2 flex items-center gap-2 shadow-sm animate-fadeIn"
                         >
-                            ×
-                        </button>
-                    </div>
-                ))}
+                            {item.name}
+                            <button
+                                className="bg-none text-red-600 text-xl cursor-pointer hover:scale-110 transition-all"
+                                onClick={() => handleRemove(id)}
+                            >
+                                ×
+                            </button>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
