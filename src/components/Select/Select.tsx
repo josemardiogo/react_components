@@ -118,8 +118,25 @@ const Select = ({ options, selectedIds = [], setSelectedIds }: SelectProps) => {
                     return (
                         <div
                             key={id}
-                            className="bg-gradient-to-br from-blue-200 to-blue-300 rounded-full px-4 py-2 flex items-center gap-2 shadow-sm animate-fadeIn"
+                            className="bg-gradient-to-br from-blue-200 to-blue-300 rounded-full px-4 py-2 flex items-center gap-2 shadow-sm"
+                            style={{
+                                animation: 'fadeIn 0.3s ease-in forwards',
+                            }}
                         >
+                            <style>
+                                {`
+                                @keyframes fadeIn {
+                                    from {
+                                        opacity: 0;
+                                        transform: scale(0.9);
+                                    }
+                                    to {
+                                        opacity: 1;
+                                        transform: scale(1);
+                                    }
+                                }
+                                `}
+                            </style>
                             {item.name}
                             <button
                                 className="bg-none text-red-600 text-xl cursor-pointer hover:scale-110 transition-all"
@@ -136,3 +153,29 @@ const Select = ({ options, selectedIds = [], setSelectedIds }: SelectProps) => {
 };
 
 export default Select;
+
+
+// how look like in app component
+/* 
+const options: IOption[] = [
+    { id: 1, name: 'United States' },
+    { id: 2, name: 'Canada' },
+    { id: 3, name: 'United Kingdom' },
+    { id: 4, name: 'France' },
+    { id: 5, name: 'Germany' },
+    { id: 6, name: 'Japan' },
+    { id: 7, name: 'Australia' },
+    { id: 8, name: 'Brazil' },
+    { id: 9, name: 'India' },
+    { id: 10, name: 'India' },
+    { id: 11, name: 'Angola' },
+  ];
+
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  return (
+    <div> 
+      <Select options={options} selectedIds={selectedIds} setSelectedIds={setSelectedIds} />
+    </div>
+  );
+*/
